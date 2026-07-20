@@ -16,7 +16,7 @@ Links oficiais:
 - [VRA no Portal Brasileiro de Dados Abertos](https://dados.gov.br/dados/conjuntos-dados/dadosabertos-areas-de-atuacao-voos-e-operacoes-aereas-voo-regular-ativo-vra)
 - [Consulta Interativa de Pontualidade e Regularidade](https://www.gov.br/anac/pt-br/assuntos/dados-e-estatisticas/passageiros/consulta-interativa-pontualidade-e-regularidade) — usada para validar os indicadores calculados
 
-Além dos voos, o projeto usa os cadastros públicos da própria ANAC como tabelas de referência: aeródromos (com município e UF) e empresas aéreas. Período analisado: [preencher — ex.: jan/2023 a dez/2025].
+Além dos voos, o projeto usa os cadastros públicos da própria ANAC como tabelas de referência, disponibilizados no SIROS e atualizados diariamente: [aeródromos](https://siros.anac.gov.br/siros/registros/aerodromo/aerodromos.csv) (com município e UF) e [empresas aéreas](https://siros.anac.gov.br/siros/registros/cia/cias.csv). Período analisado: [preencher — ex.: jan/2023 a dez/2025].
 
 Diferente de um dataset pronto do Kaggle, aqui os dados vêm "achatados" em arquivos mensais, com encoding e layout que variam ao longo dos anos. A modelagem dimensional (fato + dimensões) é construída no próprio projeto.
 
