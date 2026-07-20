@@ -8,12 +8,15 @@ from pathlib import Path
 
 # Acessar config.py
 ROOT_DIR = Path(__file__).resolve().parent.parent
-if ROOT_DIR not in sys.path:
+if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
-from config import PROJECT_ROOT, DATA_RAW, DATA_PROCESSED, URLS_POR_DATA
+from config import PROJECT_ROOT, DATA_RAW, DATA_PROCESSED, URLS_POR_DATA, URLS_CADASTROS
 
-
+todas_urls = {
+    **URLS_POR_DATA,
+    **URLS_CADASTROS
+}
 
 # Função para avaliação dos csv
 def avaliar_csv(caminho_arquivo: Path):
@@ -22,23 +25,29 @@ def avaliar_csv(caminho_arquivo: Path):
 
         print("\n" + "=" * 40)
         print(f"Avaliação do arquivo: {caminho_arquivo}")
-        print(df_amostra.shape)
+        print(f"Formato da amostra (linhas, colunas): {df_amostra.shape}")
         print(f"Colunas do csv: {df_amostra.columns.tolist()}")
         print("\n" + "=" * 40)
         print(df_amostra)
         print("\n" + "=" * 40)
-    
+
+    except pd.errors.EmptyDataError:
+        print(f"Erro ao avaliar {caminho_arquivo}: arquivo sem dados")
+
+    except pd.errors.ParserError as e:
+        print(f"Erro ao avaliar {caminho_arquivo}: csv malformado ({e})")
+
     except Exception as e:
-        print(f"Erro ao ler e avaliar o arquivo csv: {caminho_arquivo}")
+        print(f"Erro ao ler e avaliar o arquivo csv {caminho_arquivo}: {e}")
 
 
 
 def main():
     # Garantir pasta
     DATA_RAW.mkdir(parents = True, exist_ok = True)
-    for data, fonte_url  in URLS_POR_DATA.items():
+    for arq, fonte_url  in todas_urls.items():
         try:
-            caminho_atual = DATA_RAW/f"{data}.csv"
+            caminho_atual = DATA_RAW/f"{arq}.csv"
 
             if caminho_atual.exists() and caminho_atual.stat().st_size > 0:
                 continue
@@ -62,36 +71,40 @@ def main():
             if (caminho_atual).stat().st_size == 0:
                 raise ValueError("Erro! Arquivo vazio")
 
-            print(f"Download de {data} Concluído com sucesso!")
+            print(f"Download de {arq} Concluído com sucesso!")
 
             # Chamar a função de avaliação:
             avaliar_csv(caminho_atual)
 
         except HTTPError as e:
-            print(f"Erro no servidor ({data}): {e}")
+            print(f"Erro no servidor ({arq}): {e}")
             caminho_atual.unlink(missing_ok=True)
             continue
 
         except ConnectionError:
-            print(f"Erro de conexão ({data})")
+            print(f"Erro de conexão ({arq})")
             caminho_atual.unlink(missing_ok=True)
             continue
 
         except Timeout:
-            print(f"Conexão ultrapassou o tempo de resposta ({data})")
+            print(f"Conexão ultrapassou o tempo de resposta ({arq})")
             caminho_atual.unlink(missing_ok=True)
             continue
 
         except RequestException as e:
-            print(f"Erro inesperado na requisição ({data}): {e}")
+            print(f"Erro inesperado na requisição ({arq}): {e}")
             caminho_atual.unlink(missing_ok=True)
             continue
 
         except ValueError as e:
-            print(f"Erro de validação ({data}): {e}")
+            print(f"Erro de validação ({arq}): {e}")
             caminho_atual.unlink(missing_ok=True)
             continue
 
 
 if __name__ == "__main__":
     main()
+
+
+arquivos = sorted(DATA_RAW.glob("*.csv"))
+total_bytes = sum(a.stat().st_size for a in arquivos)

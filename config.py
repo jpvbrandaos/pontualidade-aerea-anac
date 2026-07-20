@@ -29,3 +29,10 @@ while data_atual <= data_final:
         data_atual = data_atual.replace(year = data_atual.year + 1, month = 1)
     else:
         data_atual = data_atual.replace(month = data_atual.month + 1)
+
+
+# URLs dos cadastros de referência (SIROS) — atualizados diariamente pela ANAC
+URLS_CADASTROS = {
+    "aerodromos": "https://siros.anac.gov.br/siros/registros/aerodromo/aerodromos.csv",
+    "empresas": "https://siros.anac.gov.br/siros/registros/cia/cias.csv",
+}
