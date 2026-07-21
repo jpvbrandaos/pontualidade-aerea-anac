@@ -40,7 +40,13 @@ def avaliar_csv(caminho_arquivo: Path):
     except Exception as e:
         print(f"Erro ao ler e avaliar o arquivo csv {caminho_arquivo}: {e}")
 
-
+def resumo():
+        arquivos = sorted(DATA_RAW.glob("*.csv"))
+        mensais = [a.stem for a in arquivos if a.stem[0].isdigit()]  # só AAAA-MM
+        total_mb = sum(a.stat().st_size for a in arquivos) / 1024**2
+        print(f"\nResumo: {len(arquivos)} arquivos ({len(mensais)} mensais + {len(arquivos)-len(mensais)} cadastros)")
+        print(f"Período: {min(mensais)} a {max(mensais)}")
+        print(f"Tamanho total: {total_mb:.1f} MB")
 
 def main():
     # Garantir pasta
@@ -100,11 +106,9 @@ def main():
             print(f"Erro de validação ({arq}): {e}")
             caminho_atual.unlink(missing_ok=True)
             continue
+    # Resumo
+    resumo()
 
 
 if __name__ == "__main__":
     main()
-
-
-arquivos = sorted(DATA_RAW.glob("*.csv"))
-total_bytes = sum(a.stat().st_size for a in arquivos)
