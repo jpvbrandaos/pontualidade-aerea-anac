@@ -16,11 +16,11 @@ Links oficiais:
 - [VRA no Portal Brasileiro de Dados Abertos](https://dados.gov.br/dados/conjuntos-dados/dadosabertos-areas-de-atuacao-voos-e-operacoes-aereas-voo-regular-ativo-vra)
 - [Consulta Interativa de Pontualidade e Regularidade](https://www.gov.br/anac/pt-br/assuntos/dados-e-estatisticas/passageiros/consulta-interativa-pontualidade-e-regularidade) — usada para validar os indicadores calculados
 
-Além dos voos, o projeto usa os cadastros públicos da própria ANAC como tabelas de referência, disponibilizados no SIROS e atualizados diariamente: [aeródromos](https://siros.anac.gov.br/siros/registros/aerodromo/aerodromos.csv) (com município e UF) e [empresas aéreas](https://siros.anac.gov.br/siros/registros/cia/cias.csv). Período analisado: [preencher — ex.: jan/2023 a dez/2025].
+Além dos voos, o projeto usa os cadastros públicos da própria ANAC como tabelas de referência, disponibilizados no SIROS e atualizados diariamente: [aeródromos](https://siros.anac.gov.br/siros/registros/aerodromo/aerodromos.csv) (com município e UF) e [empresas aéreas](https://siros.anac.gov.br/siros/registros/cia/cias.csv). Período analisado: janeiro de 2023 a maio de 2026, 41 meses.
 
 Diferente de um dataset pronto do Kaggle, aqui os dados vêm "achatados" em arquivos mensais, com encoding e layout que variam ao longo dos anos. A modelagem dimensional (fato + dimensões) é construída no próprio projeto.
 
-O dicionário de dados, com a descrição das tabelas e os problemas de qualidade encontrados, está em `docs/dicionario_dados.md`. O diagrama do modelo estrela está em `docs/modelo_estrela.png`.
+O dicionário de dados, com a descrição das tabelas e os problemas de qualidade encontrados, está em `docs/dicionario_dados.md`. O modelo estrela está em `docs/`: diagrama em `modelo_estrela.png`, fonte editável em `modelo_estrela.dbml` e as decisões de modelagem em `modelo_estrela.md`.
 
 ## Perguntas de negócio
 
@@ -55,6 +55,8 @@ Cada arquivo `.sql` tem um comentário no topo com a pergunta, a lógica usada e
 │   └── dashboard.pbix
 ├── docs/
 │   ├── dicionario_dados.md
+│   ├── modelo_estrela.md
+│   ├── modelo_estrela.dbml
 │   ├── modelo_estrela.png
 │   └── prints/
 ├── docker-compose.yml
@@ -67,8 +69,8 @@ Cada arquivo `.sql` tem um comentário no topo com a pergunta, a lógica usada e
 Algumas escolhas do projeto:
 
 - Os arquivos em `data/raw/` nunca são editados. Todo tratamento gera novos arquivos em `data/processed/`, então dá para refazer qualquer etapa do zero.
-- O banco segue um modelo estrela: `fato_voos` no centro, com dimensões de empresa, aeroporto e calendário. Métricas de atraso são calculadas uma única vez, na construção da fato.
-- Adotei o padrão amplamente usado no setor para pontualidade: voo pontual é o que parte/chega com até 15 minutos de atraso (indicador D15).
+- O banco segue um modelo estrela: `fato_voos` no centro, com dimensões de empresa, aeroporto e calendário. A dimensão de aeroporto é usada duas vezes pela fato, como origem e como destino. Não há dimensão de justificativas: a coluna veio vazia em todo o período. Métricas de atraso são calculadas uma única vez, na construção da fato.
+- Adotei o padrão usado no setor para pontualidade: voo pontual é o que parte com até 15 minutos de atraso sobre o horário previsto (indicador D15), antecipações incluídas. A definição completa está em `docs/modelo_estrela.md`.
 - Os indicadores calculados são conferidos contra a Consulta Interativa de Pontualidade e Regularidade da ANAC, construída a partir da mesma base. Se os números divergem, o erro está no pipeline — a validação contra a fonte oficial faz parte do projeto.
 - O Power BI se conecta às views de `sql/views/`, não às tabelas diretamente. Assim a lógica das métricas fica versionada no repositório.
 - Credenciais ficam em variáveis de ambiente (`.env`, fora do versionamento). O `.env.example` mostra o que precisa ser preenchido.
@@ -76,7 +78,7 @@ Algumas escolhas do projeto:
 ## Escopo e limitações
 
 - A base VRA cobre apenas o transporte aéreo regular. Aviação executiva, geral e voos não regulares ficam fora da análise.
-- A análise se restringe a voos domésticos. Voos internacionais foram excluídos porque os aeroportos estrangeiros não constam no cadastro de aeródromos usado nas dimensões (decisão documentada no dicionário de dados).
+- A análise se restringe a voos domésticos: origem e destino em aeródromos com país Brasil no cadastro da ANAC, o que cobre cerca de 85% dos registros. O critério, a alternativa rejeitada e os números estão no dicionário de dados.
 - Os horários realizados dependem do reporte das próprias empresas aéreas à ANAC; a qualidade do dado reflete a qualidade desse reporte.
 - Antecipações (voos que partem antes do previsto) são mantidas na base e tratadas como categoria própria, não como "atraso negativo" descartado.
 - O tratamento de fuso horário adotado está documentado no dicionário de dados — análises por hora do dia dependem diretamente dessa decisão.
