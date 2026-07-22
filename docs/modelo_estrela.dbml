@@ -1,0 +1,52 @@
+Table fato_voos {
+  data_voo date [ref: > dim_calendario.data]
+  sigla_empresa varchar [ref: > dim_empresa.sigla_icao]
+  icao_origem varchar [ref: > dim_aeroporto.sigla_icao]
+  icao_destino varchar [ref: > dim_aeroporto.sigla_icao]
+  numero_voo varchar
+  codigo_di varchar
+  codigo_tipo_linha varchar
+  modelo_equipamento varchar
+  situacao_voo varchar
+  partida_prevista datetime
+  partida_real datetime
+  chegada_prevista datetime
+  chegada_real datetime
+  atraso_partida_min float
+  atraso_chegada_min float
+  duracao_prevista_min float
+  duracao_real_min float
+  flag_pontual_d15 boolean
+  flag_antecipado boolean
+  flag_cancelado boolean
+  flag_sem_prevista boolean
+}
+
+Table dim_empresa {
+  sigla_icao varchar [pk]
+  sigla_iata varchar
+  nome varchar
+  pais_sede varchar
+  flag_no_cadastro boolean
+}
+
+Table dim_aeroporto {
+  sigla_icao varchar [pk]
+  sigla_iata varchar
+  nome varchar
+  municipio varchar
+  uf varchar
+  regiao varchar
+}
+
+Table dim_calendario {
+  data date [pk]
+  ano int
+  mes int
+  nome_mes varchar
+  dia int
+  dia_semana varchar
+  flag_fim_de_semana boolean
+  flag_feriado_nacional boolean
+  flag_alta_temporada boolean
+}
