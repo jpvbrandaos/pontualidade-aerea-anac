@@ -36,3 +36,30 @@ URLS_CADASTROS = {
     "aerodromos": "https://siros.anac.gov.br/siros/registros/aerodromo/aerodromos.csv",
     "empresas": "https://siros.anac.gov.br/siros/registros/cia/cias.csv",
 }
+
+
+# Mapeamento das regiões
+UF_REGIAO = {
+    "AC": "Norte", "AP": "Norte", "AM": "Norte", "PA": "Norte",
+    "RO": "Norte", "RR": "Norte", "TO": "Norte",
+    "AL": "Nordeste", "BA": "Nordeste", "CE": "Nordeste", "MA": "Nordeste",
+    "PB": "Nordeste", "PE": "Nordeste", "PI": "Nordeste", "RN": "Nordeste",
+    "SE": "Nordeste",
+    "DF": "Centro-Oeste", "GO": "Centro-Oeste", "MT": "Centro-Oeste",
+    "MS": "Centro-Oeste",
+    "ES": "Sudeste", "MG": "Sudeste", "RJ": "Sudeste", "SP": "Sudeste",
+    "PR": "Sul", "RS": "Sul", "SC": "Sul",
+}
+
+# Lista fixa das colunas (Para fixar ordem)
+COLUNAS_VRA = [
+    "Sigla ICAO Empresa Aérea", "Empresa Aérea", "Número Voo",
+    "Código DI", "Código Tipo Linha", "Modelo Equipamento",
+    "Número de Assentos", "Sigla ICAO Aeroporto Origem",
+    "Descrição Aeroporto Origem", "Partida Prevista", "Partida Real",
+    "Sigla ICAO Aeroporto Destino", "Descrição Aeroporto Destino",
+    "Chegada Prevista", "Chegada Real", "Situação Voo", "Justificativa",
+    "Referência", "Situação Partida", "Situação Chegada", "Codeshare",
+]
+
+COLUNAS_DATAS = ["partida_prevista", "partida_real", "chegada_prevista", "chegada_real"]
