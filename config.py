@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import datetime
+import calendar
 
 # Caminhos
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -9,14 +10,16 @@ DATA_PROCESSED = PROJECT_ROOT / "data" / "processed"
 
 # Data : URL 
 # Dicionário de datas e url
-# periodo: jan/2023 - maio/2026
 
-data_atual = datetime(2023, 1, 1)
-data_final = datetime(2026, 5, 1)
+# periodo: jan/2023 - maio/2026
+PERIODO_INICIO = datetime(2023, 1, 1)
+PERIODO_FIM = datetime(2026, 5, 1)
+
+data_atual = PERIODO_INICIO 
 
 URLS_POR_DATA = {}
 
-while data_atual <= data_final:
+while data_atual <= PERIODO_FIM:
     ano = data_atual.year
     mes = data_atual.month
 
@@ -63,3 +66,76 @@ COLUNAS_VRA = [
 ]
 
 COLUNAS_DATAS = ["partida_prevista", "partida_real", "chegada_prevista", "chegada_real"]
+
+RENOMEAR_COLUNAS = {
+    "Sigla ICAO Empresa Aérea": "sigla_empresa",
+    "Número Voo": "numero_voo",
+    "Código DI": "codigo_di",
+    "Código Tipo Linha": "codigo_tipo_linha",
+    "Modelo Equipamento": "modelo_equipamento",
+    "Número de Assentos": "numero_assentos",
+    "Sigla ICAO Aeroporto Origem": "icao_origem",
+    "Sigla ICAO Aeroporto Destino": "icao_destino",
+    "Partida Prevista": "partida_prevista",
+    "Partida Real": "partida_real",
+    "Chegada Prevista": "chegada_prevista",
+    "Chegada Real": "chegada_real",
+    "Situação Voo": "situacao_voo",
+    "Situação Partida": "situacao_partida",
+    "Situação Chegada": "situacao_chegada",
+    "Referência": "referencia",
+    "Codeshare": "codeshare",
+}
+
+RENOMEAR_EMPRESAS = {
+    "ICAO OPERADOR AÉREO": "sigla_empresa",
+    "IATA OPERADOR AÉREO": "sigla_iata",
+    "NOME OPERADOR AÉREO": "nome_empresa",
+    "PAÍS SEDE": "pais_sede",
+}
+
+COLUNAS_DESCARTADAS = [
+    "Justificativa",
+    "Empresa Aérea",
+    "Descrição Aeroporto Origem",
+    "Descrição Aeroporto Destino",
+]
+
+
+# Dim calendário
+# Período do projeto
+_ultimo_dia = calendar.monthrange(PERIODO_FIM.year, PERIODO_FIM.month)[1]
+
+DATA_INICIO = PERIODO_INICIO.strftime("%Y-%m-%d")
+DATA_FIM = PERIODO_FIM.replace(day=_ultimo_dia).strftime("%Y-%m-%d")
+
+data_atual = PERIODO_INICIO   # cursor consumido pelo loop
+
+# Alta temporada: janeiro, julho e 15 a 31 de dezembro
+MESES_ALTA_TEMPORADA = [1, 7]
+DIA_INICIO_ALTA_TEMPORADA_DEZ = 15
+
+NOMES_MESES = {
+    1: "Janeiro", 2: "Fevereiro", 3: "Março", 4: "Abril",
+    5: "Maio", 6: "Junho", 7: "Julho", 8: "Agosto",
+    9: "Setembro", 10: "Outubro", 11: "Novembro", 12: "Dezembro",
+}
+
+NOMES_DIAS_SEMANA = {
+    0: "Segunda-feira", 1: "Terça-feira", 2: "Quarta-feira",
+    3: "Quinta-feira", 4: "Sexta-feira", 5: "Sábado", 6: "Domingo",
+}
+
+
+# Dim aeroporto
+
+RENOMEAR_AERODROMOS = {
+    "SIGLA ICAO AERÓDROMO": "sigla_icao",
+    "SIGLA IATA AERÓDROMO": "sigla_iata",
+    "NOME AERÓDROMO": "nome_aeroporto",
+    "MUNICÍPIO AERÓDROMO": "municipio",
+    "ESTADO AERÓDROMO": "uf",
+    "PAÍS AERÓDROMO": "pais",
+    "LATITUDE": "latitude",
+    "LONGITUDE": "longitude",
+}
