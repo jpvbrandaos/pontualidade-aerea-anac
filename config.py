@@ -127,6 +127,18 @@ NOMES_DIAS_SEMANA = {
 }
 
 
+# Fato — colunas na ordem do modelo (docs/modelo_estrela.dbml)
+COLUNAS_FATO = [
+    "data_voo", "sigla_empresa", "icao_origem", "icao_destino",
+    "numero_voo", "codigo_di", "codigo_tipo_linha", "modelo_equipamento",
+    "situacao_voo",
+    "partida_prevista", "partida_real", "chegada_prevista", "chegada_real",
+    "atraso_partida_min", "atraso_chegada_min",
+    "duracao_prevista_min", "duracao_real_min",
+    "flag_pontual_d15", "flag_antecipado", "flag_cancelado", "flag_sem_prevista",
+]
+
+
 # Dim aeroporto
 
 RENOMEAR_AERODROMOS = {
