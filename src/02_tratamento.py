@@ -9,7 +9,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.append(str(ROOT_DIR))
 
 # Caminho dos dados crus, colunas do df
-from config import (DATA_RAW, # Caminhos
+from config import (DATA_RAW, DATA_PROCESSED, # Caminhos
                     COLUNAS_VRA, COLUNAS_DATAS, COLUNAS_DESCARTADAS, RENOMEAR_COLUNAS, COLUNAS_FATO, # Colunas
                     DATA_INICIO, DATA_FIM, NOMES_MESES, NOMES_DIAS_SEMANA, MESES_ALTA_TEMPORADA, DIA_INICIO_ALTA_TEMPORADA_DEZ, #DIM_CALENDARIO
                     RENOMEAR_AERODROMOS, UF_REGIAO, # DIM_AEROPORTO
@@ -288,6 +288,29 @@ def validar(fato: pd.DataFrame, df_domestico: pd.DataFrame,
     print("Validações OK")
 
 
+def salvar(fato: pd.DataFrame, dim_empresa: pd.DataFrame,
+           dim_aeroporto: pd.DataFrame, dim_calendario: pd.DataFrame) -> None:
+    """Grava a fato e as dimensões em data/processed/, em Parquet.
+
+    Parquet preserva os tipos (datetime, boolean nullable) que o CSV
+    destruiria. Sempre sobrescreve: reexecutar o pipeline regenera a
+    camada processed do zero, e data/raw permanece intocada.
+    """
+    DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
+
+    tabelas = {
+        "fato_voos": fato,
+        "dim_empresa": dim_empresa,
+        "dim_aeroporto": dim_aeroporto,
+        "dim_calendario": dim_calendario,
+    }
+    for nome, tabela in tabelas.items():
+        caminho = DATA_PROCESSED / f"{nome}.parquet"
+        tabela.to_parquet(caminho, index=False)
+        tamanho_mb = caminho.stat().st_size / 1024**2
+        print(f"  {nome}.parquet: {len(tabela)} linhas, {tamanho_mb:.1f} MB")
+
+
 def main():
     df = carregar_vra()
     print(f"Linhas lidas do VRA: {len(df)}")
@@ -323,6 +346,10 @@ def main():
     fato = construir_fato(df_dom)
 
     validar(fato, df_dom, dim_emp, dim_aero, dim_cal)
+
+    # Escrita — só acontece se todas as validações passaram
+    print(f"\nSalvando em {DATA_PROCESSED}:")
+    salvar(fato, dim_emp, dim_aero, dim_cal)
 
     # Resumo
     print(f"\nfato_voos: {len(fato)} linhas x {len(fato.columns)} colunas")
