@@ -1,6 +1,6 @@
 Table fato_voos {
   data_voo date [ref: > dim_calendario.data]
-  sigla_empresa varchar [ref: > dim_empresa.sigla_icao]
+  sigla_empresa varchar [ref: > dim_empresa.sigla_empresa]
   icao_origem varchar [ref: > dim_aeroporto.sigla_icao]
   icao_destino varchar [ref: > dim_aeroporto.sigla_icao]
   numero_voo varchar
@@ -23,9 +23,9 @@ Table fato_voos {
 }
 
 Table dim_empresa {
-  sigla_icao varchar [pk]
+  sigla_empresa varchar [pk]
   sigla_iata varchar
-  nome varchar
+  nome_empresa varchar
   pais_sede varchar
   flag_no_cadastro boolean
 }
@@ -33,10 +33,13 @@ Table dim_empresa {
 Table dim_aeroporto {
   sigla_icao varchar [pk]
   sigla_iata varchar
-  nome varchar
+  nome_aeroporto varchar
   municipio varchar
   uf varchar
+  pais varchar
   regiao varchar
+  latitude varchar
+  longitude varchar
 }
 
 Table dim_calendario {

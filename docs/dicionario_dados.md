@@ -33,7 +33,7 @@ Percentuais de nulos medidos em janeiro de 2023, exceto onde indicado.
 | Chegada Real | data/hora | Chegada realizada | 5,1% | Acompanha Partida Real |
 | Situação Voo | texto | REALIZADO, CANCELADO ou NÃO INFORMADO | 0% | 83.210 realizados no mês (94,9%), 4.386 cancelados, 51 não informados |
 | Justificativa | — | Código de justificativa da alteração | 100% | Vazia nos três meses examinados; a exigência caiu em abril de 2020 com a revogação da IAC 1504, o que indica vazio na série toda; coluna descartada (decisão 8) |
-| Referência | data | Data de referência da etapa | 0% | 31 valores no mês, um por dia |
+| Referência | data | Data de referência da etapa | 0% | 31 valores no mês, um por dia; o formato acompanha a troca de layout — ISO (`2023-01-01`) nos 10 meses sem Codeshare, brasileiro (`01/07/2024 00:00:00`) nos 31 com a coluna |
 | Situação Partida | texto | Faixa de atraso na partida: Antecipado, Pontual, Atraso 30-60, 60-120, 120-240, > 240 | 9,3% | Nula quando falta a prevista ou a real; os totais fecham (decisão 4) |
 | Situação Chegada | texto | Faixa de atraso na chegada, mesmas categorias | 9,3% | Idem |
 | Codeshare | texto | Voos comerciais de parceiros sobre a mesma operação, no formato `SIGLA/NÚMERO`, separados por vírgula | 49% em 2026-05 | Não existe em jan/2023; presente em 31 dos 41 meses (decisão 1); 10.839 combinações distintas em 2026-05 |
