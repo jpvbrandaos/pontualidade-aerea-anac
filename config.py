@@ -151,3 +151,15 @@ RENOMEAR_AERODROMOS = {
     "LATITUDE": "latitude",
     "LONGITUDE": "longitude",
 }
+
+
+# Banco de dados — credenciais lidas do .env (fora do versionamento)
+from dotenv import load_dotenv
+import os
+
+load_dotenv(PROJECT_ROOT / ".env")
+
+DB_URL = (
+    f"postgresql+psycopg2://{os.environ['POSTGRES_USER']}:{os.environ['POSTGRES_PASSWORD']}"
+    f"@localhost:{os.environ['POSTGRES_PORT']}/{os.environ['POSTGRES_DB']}"
+)
